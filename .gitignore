@@ -7,7 +7,10 @@ __pycache__/
 *.pyc
 
 # OS
-.DS_Storedata/lizard/raw/
+.DS_Store
 
 /.quarto/
 **/*.quarto_ipynb
+
+# data
+data/lizard/raw
