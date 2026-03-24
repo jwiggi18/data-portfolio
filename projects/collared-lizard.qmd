@@ -1,0 +1,232 @@
+---
+title: "Mapping Crotaphytus collaris Sightings in Oklahoma"
+format: html
+execute: 
+    echo: true
+    warning: false
+---
+
+## Question
+
+Where are iNaturalist sightings of *Crotaphytus collaris* concentrated in Oklahoma, and what patterns or biases appear in the data?
+
+## Why this project matters
+
+Species occurrence data are often used to infer distribution, but observational datasets can reflect both biology and human sampling behavior. This project explores both.
+
+## Data source
+
+iNaturalist observations API. The dataset was pulled programmatically from the observations endpoint and flattened into a CSV for analysis. Link to code here. 
+
+## Approach
+
+- Filter observations to Oklahoma
+- Clean location data
+- Plot points on a map
+- Examine clustering and possible sources of bias
+
+# Load packages
+
+```{python}
+import pandas as pd
+import plotly.express as px
+```
+
+# Load data
+
+```{python}
+df = pd.read_csv("../data/lizard/processed/inat_collared_lizard_oklahoma.csv")
+df.head()
+```
+
+# Basic cleaning
+
+```{python}
+df = df.dropna(subset=["latitude", "longitude"]).copy()
+df["observed_on"] = pd.to_datetime(df["observed_on"], errors="coerce")
+df["year"] = df["observed_on"].dt.year
+
+#remove captive observations if present
+if "captive" in df.columns:
+    df = df[df["captive"] != True].copy()
+```
+
+## Map Styling function
+```{python}
+def style_oklahoma_map(fig, title):
+    fig.update_traces(
+        marker=dict(
+            size=7,
+            opacity=0.75,
+            line=dict(width=0.4, color="black")
+        )
+    )
+
+    fig.update_layout(
+        title=dict(
+            text=title,
+            x=0.5,
+            xanchor="center",
+            y=0.95
+        ),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        margin=dict(l=10, r=10, t=40, b=10),
+        legend=dict(
+            title="Quality grade",
+            x=0.0,
+            y=0.5,
+            xanchor="left",
+            yanchor="middle",
+            bgcolor="rgba(255,255,255,0.6)",
+            bordercolor="black",
+            borderwidth=0.5
+        )
+    )    
+    
+    fig.update_geos(
+        scope="usa",
+        center=dict(lat=35.5, lon=-97.5),
+        projection_scale=6,
+        bgcolor="white",
+        showland=True,
+        landcolor="white",
+        showcountries=True,
+        countrycolor="black",
+        countrywidth=0.8,
+        showsubunits=True,
+        subunitcolor="black",
+        subunitwidth=1.2,
+        showlakes=False,
+        showcoastlines=False
+    )
+
+    return fig
+```
+
+## Basic sighting map
+
+```{python}
+fig1 = px.scatter_geo(
+    df,
+    lat="latitude",
+    lon="longitude",
+    hover_name="common_name",
+    hover_data={"observed_on": True, "quality_grade": True},
+    opacity=0.7
+)
+
+fig1 = style_oklahoma_map(fig1, "Collared Lizard Observations in Oklahoma")
+
+fig1
+```
+
+## Observation quality counts
+
+```{python}
+fig2 = px.scatter_geo(
+    df,
+    lat="latitude",
+    lon="longitude",
+    color="quality_grade",
+    hover_name="common_name",
+    hover_data={"observed_on": True},
+    opacity=0.75,
+    color_discrete_map={
+        "research": "#3B82F6",
+        "casual": "#EF4444",
+        "needs_id": "#F59E0B"
+    }
+)
+
+# bold text helper function
+def make_bold(name):
+    return f"<b>{name}</b>"
+
+#add relevant refuges
+refuges = pd.DataFrame({
+    "name": [
+        "Wichita Mountains Wildlife Refuge",
+        "Osage Reservation"
+    ],
+    "latitude": [34.73, 36.75],   # adjust if needed
+    "longitude": [-98.62, -96.30]
+})
+
+fig2.add_scattergeo(
+    lat=refuges["latitude"],
+    lon=refuges["longitude"],
+    mode="markers",
+    marker=dict(
+        size=15,
+        symbol="diamond",
+        color="black",
+        line=dict(width=1, color="white")
+    ),
+    name="Reference sites"
+)
+
+fig2 = style_oklahoma_map(fig2, "Collared Lizard Observations by iNaturalist Quality Grade")
+
+fig2.add_annotation(
+    x=0.75,
+    y=0.69,
+    xref="paper",
+    yref="paper",
+    text="<b>Osage Reservation</b>",
+    showarrow=False,
+    font=dict(size=12, color="black"),
+    bgcolor="rgba(255,255,255,0.7)",
+    bordercolor="rgba(0,0,0,0)",
+    borderpad=3
+)
+
+fig2.add_annotation(
+    x=0.53,
+    y=0.34,
+    xref="paper",
+    yref="paper",
+    text="<b>Wichita Mountains Wildlife Refuge</b>",
+    showarrow=False,
+    font=dict(size=12, color="black"),
+    bgcolor="rgba(255,255,255,0.7)",
+    bordercolor="rgba(0,0,0,0)",
+    borderpad=3
+)
+
+fig2
+```
+
+
+
+## Observation Patterns Over Time 
+```{python}
+counts = df.groupby(df["observed_on"].dt.year).size().reset_index(name="count")
+
+fig = px.line(
+    counts,
+    x="observed_on",
+    y="count",
+    title="Number of Observations Over Time"
+)
+
+fig
+```
+
+## Key takeaways
+
+- Observations cluster in accessible or highly visited locations (Wichita Mountains Wildlife Refuge & The Osage Reservation)
+- Reported occurrence does not necessarily equal true distribution
+- Visualization helps reveal likely sampling bias quickly
+
+## Tools used
+
+- iNaturalist API
+- Python
+- Quarto
+- Plotly
+
+## Next steps
+
+- Compare iNaturalist and GBIF records
+- Explore habitat or land-use overlays

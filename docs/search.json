@@ -1,0 +1,142 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "I am a scientist and educator with expertise in genetics, genomics, and biological data analysis.\nMy work focuses on turning complex datasets into clear visuals and usable explanations. I am particularly interested in roles that combine analysis, visualization, and communication.\n\n\n\nData analysis in R and Python\nScientific visualization\nLiterature synthesis\nScientific writing\nCommunication of technical information to diverse audiences"
+  },
+  {
+    "objectID": "about.html#skills",
+    "href": "about.html#skills",
+    "title": "About",
+    "section": "",
+    "text": "Data analysis in R and Python\nScientific visualization\nLiterature synthesis\nScientific writing\nCommunication of technical information to diverse audiences"
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Projects",
+    "section": "",
+    "text": "A spatial visualization project using observational biodiversity data to examine distribution patterns and likely sources of sampling bias.\n\n\n\nA project using doctorate outcome data to visualize career pathways and trends across sectors.\n\n\n\nA project exploring the relationship between career outcomes and the preparation doctoral students receive for communication and teaching."
+  },
+  {
+    "objectID": "projects.html#data-visualization-and-storytelling-projects",
+    "href": "projects.html#data-visualization-and-storytelling-projects",
+    "title": "Projects",
+    "section": "",
+    "text": "A spatial visualization project using observational biodiversity data to examine distribution patterns and likely sources of sampling bias.\n\n\n\nA project using doctorate outcome data to visualize career pathways and trends across sectors.\n\n\n\nA project exploring the relationship between career outcomes and the preparation doctoral students receive for communication and teaching."
+  },
+  {
+    "objectID": "projects/collared-lizard.html",
+    "href": "projects/collared-lizard.html",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "",
+    "text": "Where are iNaturalist sightings of Crotaphytus collaris concentrated in Oklahoma, and what patterns or biases appear in the data?"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#question",
+    "href": "projects/collared-lizard.html#question",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "",
+    "text": "Where are iNaturalist sightings of Crotaphytus collaris concentrated in Oklahoma, and what patterns or biases appear in the data?"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#why-this-project-matters",
+    "href": "projects/collared-lizard.html#why-this-project-matters",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Why this project matters",
+    "text": "Why this project matters\nSpecies occurrence data are often used to infer distribution, but observational datasets can reflect both biology and human sampling behavior. This project explores both."
+  },
+  {
+    "objectID": "projects/collared-lizard.html#data-source",
+    "href": "projects/collared-lizard.html#data-source",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Data source",
+    "text": "Data source\niNaturalist observations API. The dataset was pulled programmatically from the observations endpoint and flattened into a CSV for analysis. Link to code here."
+  },
+  {
+    "objectID": "projects/collared-lizard.html#approach",
+    "href": "projects/collared-lizard.html#approach",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Approach",
+    "text": "Approach\n\nFilter observations to Oklahoma\nClean location data\nPlot points on a map\nExamine clustering and possible sources of bias"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#map-styling",
+    "href": "projects/collared-lizard.html#map-styling",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Map Styling",
+    "text": "Map Styling\n\ndef style_oklahoma_map(fig, title):\n    fig.update_traces(marker=dict(size=6))\n    fig.update_layout(\n        title=title,\n        geo=dict(\n            scope=\"usa\",\n            center=dict(lat=35.5, lon=-97.5),\n            projection_scale=6\n        ),\n        margin=dict(l=0, r=0, t=50, b=0)\n    )\n    fig.update_geos(\n        showcountries=True,\n        showcoastlines=True,\n        showland=True,\n        landcolor=\"rgb(235,235,235)\",\n        subunitcolor=\"white\"\n    )\n    return fig"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#basic-sighting-map",
+    "href": "projects/collared-lizard.html#basic-sighting-map",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Basic sighting map",
+    "text": "Basic sighting map\n\nfig1 = px.scatter_geo(\n    df,\n    lat=\"latitude\",\n    lon=\"longitude\",\n    hover_name=\"common_name\",\n    hover_data={\"observed_on\": True, \"quality_grade\": True},\n    opacity=0.7\n)\n\nfig1 = style_oklahoma_map(fig1, \"Collared Lizard Observations in Oklahoma\")\n\nfig1"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#observation-quality-counts",
+    "href": "projects/collared-lizard.html#observation-quality-counts",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Observation quality counts",
+    "text": "Observation quality counts\n\nfig2 = px.scatter_geo(\n    df,\n    lat=\"latitude\",\n    lon=\"longitude\",\n    color=\"quality_grade\",\n    hover_name=\"common_name\",\n    hover_data={\"observed_on\": True},\n    opacity=0.75,\n    color_discrete_map={\n        \"research\": \"#3B82F6\",\n        \"casual\": \"#EF4444\",\n        \"needs_id\": \"#F59E0B\"\n    }\n)\n\n# bold text helper function\ndef make_bold(name):\n    return f\"&lt;b&gt;{name}&lt;/b&gt;\"\n\n#add relevant refuges\nrefuges = pd.DataFrame({\n    \"name\": [\n        \"Wichita Mountains Wildlife Refuge\",\n        \"Osage Reservation\"\n    ],\n    \"latitude\": [34.73, 36.75],   # adjust if needed\n    \"longitude\": [-98.62, -96.30]\n})\n\nfig2.add_scattergeo(\n    lat=refuges[\"latitude\"],\n    lon=refuges[\"longitude\"],\n    mode=\"markers\",\n    marker=dict(\n        size=15,\n        symbol=\"diamond\",\n        color=\"black\",\n        line=dict(width=1, color=\"white\")\n    ),\n    name=\"Reference sites\"\n)\n\nfig2 = style_oklahoma_map(fig2, \"Collared Lizard Observations by iNaturalist Quality Grade\")\n\nfig2.add_annotation(\n    x=0.75,\n    y=0.69,\n    xref=\"paper\",\n    yref=\"paper\",\n    text=\"&lt;b&gt;Osage Reservation&lt;/b&gt;\",\n    showarrow=False,\n    font=dict(size=12, color=\"black\"),\n    bgcolor=\"rgba(255,255,255,0.7)\",\n    bordercolor=\"rgba(0,0,0,0)\",\n    borderpad=3\n)\n\nfig2.add_annotation(\n    x=0.53,\n    y=0.34,\n    xref=\"paper\",\n    yref=\"paper\",\n    text=\"&lt;b&gt;Wichita Mountains Wildlife Refuge&lt;/b&gt;\",\n    showarrow=False,\n    font=dict(size=12, color=\"black\"),\n    bgcolor=\"rgba(255,255,255,0.7)\",\n    bordercolor=\"rgba(0,0,0,0)\",\n    borderpad=3\n)\n\nfig2"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#observation-patterns-over-time",
+    "href": "projects/collared-lizard.html#observation-patterns-over-time",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Observation Patterns Over Time",
+    "text": "Observation Patterns Over Time\n\ncounts = df.groupby(df[\"observed_on\"].dt.year).size().reset_index(name=\"count\")\n\nfig = px.line(\n    counts,\n    x=\"observed_on\",\n    y=\"count\",\n    title=\"Number of Observations Over Time\"\n)\n\nfig"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#key-takeaways",
+    "href": "projects/collared-lizard.html#key-takeaways",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Key takeaways",
+    "text": "Key takeaways\n\nObservations cluster in accessible or highly visited locations (Wichita Mountains Wildlife Refuge & The Osage Reservation)\nReported occurrence does not necessarily equal true distribution\nVisualization helps reveal likely sampling bias quickly"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#tools-used",
+    "href": "projects/collared-lizard.html#tools-used",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Tools used",
+    "text": "Tools used\n\niNaturalist API\nPython\nQuarto\nPlotly"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#next-steps",
+    "href": "projects/collared-lizard.html#next-steps",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Next steps",
+    "text": "Next steps\n\nCompare iNaturalist and GBIF records\nExplore habitat or land-use overlays"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "I analyze complex data, build clear visualizations, and communicate findings in ways people can use.\nThis portfolio highlights projects that combine data analysis, visualization, and scientific storytelling.\n\n\n\nMapping Crotaphytus collaris sightings in Oklahoma\nWhat do PhD graduates do after graduation?\nTeaching-heavy careers and training gaps\n\n\n\n\n\nData cleaning and analysis\nVisualization design\nInterpretation of real-world datasets\nClear communication of findings"
+  },
+  {
+    "objectID": "index.html#featured-projects",
+    "href": "index.html#featured-projects",
+    "title": "Home",
+    "section": "",
+    "text": "Mapping Crotaphytus collaris sightings in Oklahoma\nWhat do PhD graduates do after graduation?\nTeaching-heavy careers and training gaps"
+  },
+  {
+    "objectID": "index.html#what-this-portfolio-shows",
+    "href": "index.html#what-this-portfolio-shows",
+    "title": "Home",
+    "section": "",
+    "text": "Data cleaning and analysis\nVisualization design\nInterpretation of real-world datasets\nClear communication of findings"
+  },
+  {
+    "objectID": "projects/collared-lizard.html#map-styling-function",
+    "href": "projects/collared-lizard.html#map-styling-function",
+    "title": "Mapping Crotaphytus collaris Sightings in Oklahoma",
+    "section": "Map Styling function",
+    "text": "Map Styling function\n\ndef style_oklahoma_map(fig, title):\n    fig.update_traces(\n        marker=dict(\n            size=7,\n            opacity=0.75,\n            line=dict(width=0.4, color=\"black\")\n        )\n    )\n\n    fig.update_layout(\n        title=dict(\n            text=title,\n            x=0.5,\n            xanchor=\"center\",\n            y=0.95\n        ),\n        paper_bgcolor=\"white\",\n        plot_bgcolor=\"white\",\n        margin=dict(l=10, r=10, t=40, b=10),\n        legend=dict(\n            title=\"Quality grade\",\n            x=0.0,\n            y=0.5,\n            xanchor=\"left\",\n            yanchor=\"middle\",\n            bgcolor=\"rgba(255,255,255,0.6)\",\n            bordercolor=\"black\",\n            borderwidth=0.5\n        )\n    )    \n    \n    fig.update_geos(\n        scope=\"usa\",\n        center=dict(lat=35.5, lon=-97.5),\n        projection_scale=6,\n        bgcolor=\"white\",\n        showland=True,\n        landcolor=\"white\",\n        showcountries=True,\n        countrycolor=\"black\",\n        countrywidth=0.8,\n        showsubunits=True,\n        subunitcolor=\"black\",\n        subunitwidth=1.2,\n        showlakes=False,\n        showcoastlines=False\n    )\n\n    return fig"
+  }
+]

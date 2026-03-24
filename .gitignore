@@ -1,0 +1,10 @@
+# Quarto
+_site/
+.quarto/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Storedata/lizard/raw/

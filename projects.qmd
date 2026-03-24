@@ -1,0 +1,16 @@
+---
+title: "Projects"
+---
+
+# Projects
+
+## Data visualization and storytelling projects
+
+### [Mapping *Crotaphytus collaris* sightings in Oklahoma](projects/collared-lizard.qmd)
+A spatial visualization project using observational biodiversity data to examine distribution patterns and likely sources of sampling bias.
+
+### [What do PhD graduates do after graduation?](projects/phd-careers.qmd)
+A project using doctorate outcome data to visualize career pathways and trends across sectors.
+
+### [Teaching-heavy careers and training gaps](projects/teaching-training.qmd)
+A project exploring the relationship between career outcomes and the preparation doctoral students receive for communication and teaching.

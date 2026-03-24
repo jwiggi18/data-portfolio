@@ -1,0 +1,17 @@
+---
+title: "About"
+---
+
+# About
+
+I am a scientist and educator with expertise in genetics, genomics, and biological data analysis.
+
+My work focuses on turning complex datasets into clear visuals and usable explanations. I am particularly interested in roles that combine analysis, visualization, and communication.
+
+## Skills
+
+- Data analysis in R and Python
+- Scientific visualization
+- Literature synthesis
+- Scientific writing
+- Communication of technical information to diverse audiences

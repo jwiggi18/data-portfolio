@@ -1,0 +1,22 @@
+---
+title: "Home"
+---
+
+# Data Analysis & Visualization Portfolio
+
+I analyze complex data, build clear visualizations, and communicate findings in ways people can use.
+
+This portfolio highlights projects that combine data analysis, visualization, and scientific storytelling.
+
+## Featured Projects
+
+- [Mapping *Crotaphytus collaris* sightings in Oklahoma](projects/collared-lizard.qmd)
+- [What do PhD graduates do after graduation?](projects/phd-careers.qmd)
+- [Teaching-heavy careers and training gaps](projects/teaching-training.qmd)
+
+## What this portfolio shows
+
+- Data cleaning and analysis
+- Visualization design
+- Interpretation of real-world datasets
+- Clear communication of findings

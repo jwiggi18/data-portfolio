@@ -1,0 +1,13 @@
+name: data-portfolio
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib
+  - python=3.11
+  - ipykernel
+  - jupyter
+  - pandas
+  - requests
+  - plotly
+prefix: /opt/anaconda3/envs/data-portfolio
