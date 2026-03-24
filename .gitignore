@@ -8,3 +8,6 @@ __pycache__/
 
 # OS
 .DS_Storedata/lizard/raw/
+
+/.quarto/
+**/*.quarto_ipynb
