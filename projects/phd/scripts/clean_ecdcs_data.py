@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # %%
-file_path = "../../data/phd/raw/ecdcs/position_type.xlsx"
+file_path = "../data/raw/ecdcs/position_type.xlsx"
 
 # Skip messy header rows
 df = pd.read_excel(
@@ -25,12 +25,12 @@ df = df.rename(columns={
     df.columns[8]: "other_total"
 })
 
-# replace spaces in column names with and underscore
+# replace spaces in column names with an underscore
 df.columns = (
     df.columns
     .str.strip() # remove leading/trailing spaces
     .str.lower()  # lowercase
-    .str.replace(r"[ ,]", "_", regex=True)# spaces + commas → _
+    .str.replace(r"[ ,]", "_", regex=True)# spaces + commas to _
 )
 
 # Drop rows that are all NA
@@ -40,25 +40,32 @@ df = df.dropna(how="all")
 print(df.head())
 print(df.columns)
 # %%
-#subset the table only keeping the 3 biology phd rows, new dataframe = biology_df
+# ******** Create Biology Specific Data Frame *********
+# Subset the table only keeping the 3 biology phd rows, new dataframe = biology_df
 biology_df = df.iloc[14:17].copy()
-# Rename first column
+
+# Rename first column, initial spreadsheet had categories in col 0 that were not just field
 biology_df = biology_df.rename(columns={biology_df.columns[0]: "field"})
+
+# Save biology_df as excel file
+biology_df.to_excel("../data/processed/all_biology_fields.xlsx", index=False)
+
 print(biology_df)
 # %%
+# ****** Create Biology, Ag, & Life Sciences Series = bio_ag_life_values ********
 #subset on focal group (most aligned with Okstate bio dept phds)
 # 'Biological, agricultural, and environmental life sciences'=row 14 
-# note becaue subsetting single row is actually creating a series)
-bio_row14 = biology_df.iloc[0]
+# note: subsetting single row is actually creating a series so code changes
+bio_ag_life = biology_df.iloc[0]
 
-values14 = bio_row14.drop("field") #the column name is part of the series and cannot be plotted
+bio_ag_life_values = bio_ag_life.drop("field") #the column name is part of the series and cannot be plotted
 
-print(values14)
+print(bio_ag_life_values)
 
 # %%
 #basic plot
-values14 = values14.drop(["faculty_total", "other_total"])
-plt.bar(values14.index, values14.values)
+bio_ag_life_values = bio_ag_life_values.drop(["faculty_total", "other_total"]) # column totals for whole spreadsheet
+plt.bar(bio_ag_life_values.index, bio_ag_life_values.values)
 
 plt.xticks(rotation=45, ha="right")
 plt.ylabel("Percent")
@@ -67,54 +74,46 @@ plt.title("Position Types of Early-Career Life Sciences PhDs")
 plt.tight_layout()
 plt.show()
 # %%
-#Build a new clean series with aggregated data
 
-clean_values = {
+# Aggregate bio_ag_life_values by job category
+bio_ag_life_aggregate = {
     "Tenure track faculty": (
-        values14["tenured_faculty"] +
-        values14["tenure-track_faculty"] #add percentages
+        bio_ag_life_values["tenured_faculty"] +
+        bio_ag_life_values["tenure-track_faculty"] #add percentages
     ),
 
     "Non-tenure track faculty": (
-        values14["non-tenure_track_faculty_with_rank"] +
-        values14["other_faculty__no_rank_or_tenurea"] #add percentages
+        bio_ag_life_values["non-tenure_track_faculty_with_rank"] +
+        bio_ag_life_values["other_faculty__no_rank_or_tenurea"] #add percentages
     ),
 
-    "Postdoctoral scholar": values14["post_doctoral_scholar"],
+    "Postdoctoral scholar": bio_ag_life_values["post_doctoral_scholar"],
 
-    "Non-academic research": values14["research_scientist_or_nonfaculty_researcher"],
+    "Non-academic research": bio_ag_life_values["research_scientist_or_nonfaculty_researcher"],
 
-    "All other positions": values14["all_other_positionsc"]
+    "Ohter": bio_ag_life_values["all_other_positionsc"]
 }
 
 # %%
-# Convert to a series to make sure the total is 100%
-clean_values = pd.Series(clean_values)
-print(clean_values)
-print(clean_values.sum())
+# Convert to a series so can add %s to make sure the total is ~ 100%
+bio_ag_life_aggregate = pd.Series(bio_ag_life_aggregate)
+print(bio_ag_life_aggregate)
+print(bio_ag_life_aggregate.sum())
 
-# %%
-# clean up labels
-clean_values.index = [
-    "Tenure-track faculty",
-    "Non-tenure faculty",
-    "Postdoc",
-    "Non-academic research",
-    "Other"
-]
+
 # %%
 text_color = "#333333"
 
 plt.figure()
 
-bars = plt.bar(clean_values.index, 
-               clean_values.values, 
+bars = plt.bar(bio_ag_life_aggregate.index, 
+               bio_ag_life_aggregate.values, 
                color="#50838f",
                edgecolor="#333333")
 
 plt.ylabel("Percent of PhDs")
 plt.title(
-    "Early-Career Life Sciences PhDs by Position Type",
+    "Early-Career Biology, Agriculture, and Life Sciences PhDs by Position Type",
     color=text_color,
     fontweight="bold")
 

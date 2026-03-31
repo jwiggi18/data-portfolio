@@ -13,4 +13,4 @@ __pycache__/
 **/*.quarto_ipynb
 
 # data
-data/lizard/raw
+projects/lizard/data/raw

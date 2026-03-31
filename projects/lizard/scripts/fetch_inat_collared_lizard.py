@@ -8,8 +8,8 @@ import requests
 BASE_OBS_URL = "https://api.inaturalist.org/v1/observations" #inat base api url
 BASE_PLACE_URL = "https://api.inaturalist.org/v1/places" #inat url for identifying locations (places)
 
-RAW_DIR = Path("data/lizard/raw") #raw data path
-PROC_DIR = Path("data/lizard/processed") #processed data path
+RAW_DIR = Path("data/raw") #raw data path
+PROC_DIR = Path("data/processed") #processed data path
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -145,5 +145,5 @@ def main():
     print(df.head())
 
 
-if __name__ == "__main__": # if this file is run directly execule the main fxn (that runs all functions in the correct order)
+if __name__ == "__main__": # if this file is run directly execute the main fxn (that runs all functions in the correct order)
     main()

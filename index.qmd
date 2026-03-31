@@ -10,9 +10,9 @@ This portfolio highlights projects that combine data analysis, visualization, an
 
 ## Featured Projects
 
-- [Mapping *Crotaphytus collaris* sightings in Oklahoma](projects/collared-lizard.qmd)
-- [What do PhD graduates do after graduation?](projects/phd-careers.qmd)
-- [Teaching-heavy careers and training gaps](projects/teaching-training.qmd)
+- [Mapping *Crotaphytus collaris* sightings in Oklahoma](projects/lizard/collared-lizard.qmd)
+- [What do PhD graduates do after graduation?](projects/phd/phd-careers.qmd)
+- [Teaching-heavy careers and training gaps](projects/training/teaching-training.qmd)
 
 ## What this portfolio shows
 

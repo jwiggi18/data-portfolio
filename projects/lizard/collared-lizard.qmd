@@ -35,7 +35,7 @@ import plotly.express as px
 # Load data
 
 ```{python}
-df = pd.read_csv("../data/lizard/processed/inat_collared_lizard_oklahoma.csv")
+df = pd.read_csv("data/processed/inat_collared_lizard_oklahoma.csv")
 df.head()
 ```
 
