@@ -15,6 +15,9 @@ execute:
 ## Datasets
 ### Early Career Doctorates Survey (ECDS) [website](https://ncses.nsf.gov/surveys/early-career-doctorates/2017)
 
+Summary from the ECDS site: "The ECDS gathers in-depth information about individuals who earned their first doctoral degree (PhD, MD, or equivalent) in the past 10 years and work at academic institutions and federally funded research and development centers (FFRDCs). Unique in scope, the ECDS includes professional and research doctorate holders from all fields trained in the United States and abroad. Sponsored by the National Center for Science and Engineering Statistics (NCSES) within the National Science Foundation and by the National Institutes of Health, the ECDS provides new data on the demographics, work experiences, and career paths of individuals in the first years following the completion of their doctoral studies."
+Note: the only ECDS survey conducted to date was in 2017
+
 Purpose:
 - Primary dataset for analyzing job activities (teaching, research, management)
 - Focuses on individuals within 10 years of earning a PhD
@@ -25,6 +28,8 @@ Use in this project:
 
 Citation: 
 National Center for Science and Engineering Statistics (NCSES). 2021. Early Career Doctorates: 2017. NSF 21-323. Alexandria, VA: National Science Foundation. Available at https://ncses.nsf.gov/pubs/nsf21323/.
+
+
 
 ### Survey of Earned Doctorates
 
@@ -38,10 +43,3 @@ Use in this project:
 
 ## Analyses
 
-### Early Career Doctorates Survey (ECDS)
-The ECDS has no API therefore data were dowloaded directly from the website in .xlsx format and cleaned in scripts/clean_ecdcs_data.py. 
-
-The following subsets of the full spreadsheet were produced and stored in data/processed. 
-- 
--
--

@@ -3,143 +3,142 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # %%
-file_path = "../data/raw/ecdcs/position_type.xlsx"
+# Cleaning of three datasets dowloaded from the ECDS website:
+# - employment_setting.xlsx
+# - position_type.xlsx
+# - sex_ethnicity.xlsx
 
+base_path = "../data/raw/ecdcs/"
+
+
+# %%
+# column name cleaning function
+def clean_column_names(df):
+    df = df.copy()
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(r"[^a-z0-9]+", "_", regex=True)
+        .str.replace(r"_+", "_", regex=True)
+        .str.strip("_")
+    )
+    return df
+
+
+
+# %%
+# ******************** Position Type dataset *********************
 # Skip messy header rows
-df = pd.read_excel(
-    file_path, 
+position_df = pd.read_excel(
+    base_path + "position_type.xlsx", 
     skiprows=4,
     engine="openpyxl")
 # %%
-print(df.head())
+print(position_df.head())
 # %%
-print(df.columns)
+print(position_df.columns)
+
 
 # %%
 # correct column names
-df = df.rename(columns={
-    df.columns[0]: "selected_characteristic",
-    df.columns[1]: "total_surveyed",
-    df.columns[2]: "faculty_total",
-    df.columns[7]: "post_doctoral_scholar",
-    df.columns[8]: "other_total"
+position_df = position_df.rename(columns={
+    "Unnamed: 0": "selected_characteristic",
+    "Unnamed: 1": "total_surveyed",
+    "Total": "faculty_total",
+    "Unnamed: 7": "post_doctoral_scholar",
+    "Total.1": "other_total",
+    
+    # fix footnotes
+    "Other faculty, no rank or tenurea": "other_faculty_no_rank_or_tenure",
+    "All other positionsc": "all_other_positions"
 })
 
-# replace spaces in column names with an underscore
-df.columns = (
-    df.columns
-    .str.strip() # remove leading/trailing spaces
-    .str.lower()  # lowercase
-    .str.replace(r"[ ,]", "_", regex=True)# spaces + commas to _
-)
+# drop columns that are whole data set totals (column totals - rather than row)
+position_df = position_df.drop(columns=["faculty_total", "other_total"])
+
+# Clean up column names
+position_df = clean_column_names(position_df)
 
 # Drop rows that are all NA
-df = df.dropna(how="all")
+position_df = position_df.dropna(how="all")
 
 # Inspect
-print(df.head())
-print(df.columns)
+print(position_df.head())
+print(position_df.columns)
+
+
 # %%
 # ******** Create Biology Specific Data Frame *********
-# Subset the table only keeping the 3 biology phd rows, new dataframe = biology_df
-biology_df = df.iloc[14:17].copy()
+# check row names for certainty in subsetting
+print(position_df.loc[:, ["selected_characteristic"]])
+
+
+# %%
+# Subset the table only keeping the 3 biology phd rows, new dataframe = biology_position_df
+biology_position_df = position_df[
+    position_df["selected_characteristic"].isin([
+        "Biological, agricultural, and environmental life sciences",
+        "Agricultural and environmental life sciences",
+        "Biological and biomedical sciences"
+    ])
+].copy()
 
 # Rename first column, initial spreadsheet had categories in col 0 that were not just field
-biology_df = biology_df.rename(columns={biology_df.columns[0]: "field"})
+biology_position_df = biology_position_df.rename(columns={biology_position_df.columns[0]: "field"})
 
-# Save biology_df as excel file
-biology_df.to_excel("../data/processed/all_biology_fields.xlsx", index=False)
+print(biology_position_df)
 
-print(biology_df)
 # %%
-# ****** Create Biology, Ag, & Life Sciences Series = bio_ag_life_values ********
+# Save biology_position_df as excel file
+biology_position_df.to_excel("../data/processed/ecdcs/position_all_biology.xlsx", index=False)
+
+# %%
+# ****** Create Biology, Ag, & Life Sciences dataset position_bio_ag_life_values ********
 #subset on focal group (most aligned with Okstate bio dept phds)
-# 'Biological, agricultural, and environmental life sciences'=row 14 
-# note: subsetting single row is actually creating a series so code changes
-bio_ag_life = biology_df.iloc[0]
+position_bio_ag_life = position_df[
+    position_df["selected_characteristic"].str.strip() == 
+    "Biological, agricultural, and environmental life sciences"
+].copy()
 
-bio_ag_life_values = bio_ag_life.drop("field") #the column name is part of the series and cannot be plotted
-
-print(bio_ag_life_values)
-
-# %%
-#basic plot
-bio_ag_life_values = bio_ag_life_values.drop(["faculty_total", "other_total"]) # column totals for whole spreadsheet
-plt.bar(bio_ag_life_values.index, bio_ag_life_values.values)
-
-plt.xticks(rotation=45, ha="right")
-plt.ylabel("Percent")
-plt.title("Position Types of Early-Career Life Sciences PhDs")
-
-plt.tight_layout()
-plt.show()
-# %%
-
-# Aggregate bio_ag_life_values by job category
-bio_ag_life_aggregate = {
-    "Tenure track faculty": (
-        bio_ag_life_values["tenured_faculty"] +
-        bio_ag_life_values["tenure-track_faculty"] #add percentages
-    ),
-
-    "Non-tenure track faculty": (
-        bio_ag_life_values["non-tenure_track_faculty_with_rank"] +
-        bio_ag_life_values["other_faculty__no_rank_or_tenurea"] #add percentages
-    ),
-
-    "Postdoctoral scholar": bio_ag_life_values["post_doctoral_scholar"],
-
-    "Non-academic research": bio_ag_life_values["research_scientist_or_nonfaculty_researcher"],
-
-    "Ohter": bio_ag_life_values["all_other_positionsc"]
-}
-
-# %%
-# Convert to a series so can add %s to make sure the total is ~ 100%
-bio_ag_life_aggregate = pd.Series(bio_ag_life_aggregate)
-print(bio_ag_life_aggregate)
-print(bio_ag_life_aggregate.sum())
+print(position_bio_ag_life)
+print(len(position_bio_ag_life))
 
 
 # %%
-text_color = "#333333"
+# Save position_bio_ag_life as excel file
+position_bio_ag_life.to_excel("../data/processed/ecdcs/position_bio_ag_life.xlsx", index=False)
 
-plt.figure()
 
-bars = plt.bar(bio_ag_life_aggregate.index, 
-               bio_ag_life_aggregate.values, 
-               color="#50838f",
-               edgecolor="#333333")
+# %%
+# ****** Create Agricultural and environmental life sciences dataset position_ag_life ********
 
-plt.ylabel("Percent of PhDs")
-plt.title(
-    "Early-Career Biology, Agriculture, and Life Sciences PhDs by Position Type",
-    color=text_color,
-    fontweight="bold")
+position_ag_life = position_df[
+    position_df["selected_characteristic"].str.strip() == 
+    "Agricultural and environmental life sciences"
+].copy()
 
-plt.xticks(rotation=30, ha="right", color=text_color)
-plt.yticks(color=text_color)
-plt.ylabel("Percent of PhDs", color=text_color)
+print(position_ag_life)
+print(len(position_ag_life))
 
-# Clean axes
-ax = plt.gca()
-ax.spines["top"].set_visible(False)
-ax.spines["right"].set_visible(False)
-ax.yaxis.grid(True, linestyle="--", linewidth=0.5)
-ax.set_axisbelow(True)
 
-# Add labels on bars
-for bar in bars:
-    height = bar.get_height()
-    plt.text(
-        bar.get_x() + bar.get_width()/2,
-        height,
-        f"{height:.1f}",
-        ha="center",
-        va="bottom",
-        color=text_color
-    )
+# %%
+# Save position_bio_ag_life as excel file
+position_ag_life.to_excel("../data/processed/ecdcs/position_ag_life.xlsx", index=False)
 
-plt.tight_layout()
-plt.show()
+# %%
+# ****** Create Biological and biomedical sciences dataset position_bio_biomed********
+
+position_bio_biomed = position_df[
+    position_df["selected_characteristic"].str.strip() == 
+    "Biological and biomedical sciences"
+].copy()
+
+print(position_bio_biomed)
+print(len(position_bio_biomed))
+
+
+# %%
+# Save position_bio_ag_life as excel file
+position_bio_biomed.to_excel("../data/processed/ecdcs/position_bio_biomed.xlsx", index=False)
 # %%
