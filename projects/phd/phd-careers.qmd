@@ -1,0 +1,47 @@
+---
+title: "Exploring Careers of Life Sciences PhD Graduates"
+format: html
+execute: 
+    echo: true
+    warning: false
+---
+
+## Questions
+
+- What jobs do life sciences PhDs hold within 10 years of graduation?
+- What proportion of PhDs are in teaching-focused roles?
+- How do actual career outcomes compare to initial post-graduation plans?
+
+## Datasets
+### Early Career Doctorates Survey (ECDS) [website](https://ncses.nsf.gov/surveys/early-career-doctorates/2017)
+
+Purpose:
+- Primary dataset for analyzing job activities (teaching, research, management)
+- Focuses on individuals within 10 years of earning a PhD
+
+Use in this project:
+- Identify proportion of PhDs in teaching vs research roles
+- Analyze alignment between training and job responsibilities
+
+Citation: 
+National Center for Science and Engineering Statistics (NCSES). 2021. Early Career Doctorates: 2017. NSF 21-323. Alexandria, VA: National Science Foundation. Available at https://ncses.nsf.gov/pubs/nsf21323/.
+
+### Survey of Earned Doctorates
+
+Source: National Science Foundation, National Center for Science and Engineering Statistics
+
+Purpose:
+- Captures post-graduation plans at time of degree completion
+
+Use in this project:
+- Compare expected vs actual career outcomes
+
+## Analyses
+
+### Early Career Doctorates Survey (ECDS)
+The ECDS has no API therefore data were dowloaded directly from the website in .xlsx format and cleaned in scripts/clean_ecdcs_data.py. 
+
+The following subsets of the full spreadsheet were produced and stored in data/processed. 
+- 
+-
+-

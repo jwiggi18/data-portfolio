@@ -64,9 +64,9 @@ Use in this project:
 ## Workflow
 
 1. Download and store raw data in `raw/`
-2. Clean and recode variables using scripts in `scripts/phd/`
+2. Clean and recode variables using scripts in `scripts/`
 3. Save processed datasets in `processed/`
-4. Generate figures in `outputs/phd/`
+4. Generate figures in `outputs/figures/`
 5. Display results in Quarto project pages
 
 ## Dependencies
@@ -75,6 +75,6 @@ Use in this project:
 
 ## Notes and Limitations
 
-- Job activity categories require interpretation (e.g., defining "teaching-heavy")
+- Job activity categories require interpretation and are self-reported (e.g., defining "teaching-heavy")
 - SED captures intended outcomes, not actual employment
 - Differences in survey design across datasets may affect comparability
